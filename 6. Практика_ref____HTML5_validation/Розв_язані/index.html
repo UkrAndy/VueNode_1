@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div v-for="(card,index) in cards">
+        <div class="header">
+          {{card.question}}
+        </div>
+        <div>
+          <img :src="card.imagePath" alt="image" />
+          <button @click="playAudio(index)">play</button>
+        </div>
+        <div>
+          <input :ref="`ans_${index}`" type="text" />
+          <button @click="checkAnswer(index)">Перевірити</button>
+        </div>
+        <audio :ref="`mp_${index}`" :src="card.audioPath"></audio>
+      </div>
+
+      <!-- <input ref="test" type="text" minlength="5" maxlength="7" /> -->
+
+      <hr />
+      Перевірка валідності полів
+      <hr />
+      <label>
+        Name
+        <input
+          ref="nameInp"
+          type="text"
+          v-model="name"
+          minlength="3"
+          maxlength="10"
+        />
+      </label>
+      <label>
+        Age
+        <input type="number" v-model="age" />
+      </label>
+      <button @click="addItem" :disabled="!isDataValid">Add</button>
+      <hr />
+      <input ref="test" type="text" pattern="\d{3}\/\d{2}" />
+      <button @click="check">Check by pattern</button>
+      <hr />
+      <a
+        href="https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation"
+        >Додаткова інформація про HTML валідацію</a
+      >
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          cards: [
+            {
+              id: 1,
+              question: "1)Знайдіть на клавіатурі букву ",
+              imagePath: "./images/owl.jpg",
+              audioPath: "./audio/example.mp3",
+              rightAnswer: "a"
+            },
+            {
+              id: 2,
+              question: "2)Знайдіть на клавіатурі букву ",
+              imagePath: "./images/owl.jpg",
+              audioPath: "./audio/example.mp3",
+              rightAnswer: "b"
+            }
+          ],
+          name: null,
+          age: null
+        },
+        computed: {
+          isDataValid() {
+            return this.name && this.$refs.nameInp.validity.valid && this.age;
+          }
+        },
+        watch: {},
+        methods: {
+          check() {
+            if (this.$refs.test.validity.valid) alert("ok");
+            else alert("no");
+          },
+
+          playAudio(index) {
+            console.log(`mp_${index}`);
+            console.log("this.$refs");
+            console.log(this.$refs);
+
+            this.$refs[`mp_${index}`][0].play();
+          },
+          checkAnswer(index) {
+            const userAnswer = this.$refs[`ans_${index}`][0].value;
+            if (this.cards[index].rightAnswer === userAnswer.toLowerCase())
+              alert("Ok");
+            else alert("no");
+          },
+          addItem() {}
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -3,12 +3,17 @@
     <hr />
     <div>Title :<input type="text" v-model="title" /></div>
     <div>Price:<input type="number" v-model="price" /></div>
+    <div>Image: <input type="file" @change="onSelect">
+    <img v-if="tmpImage" :src="tmpImage" class="img">
+    </div>
+    
     <button @click="onSave">{{ buttonTitle }}</button>
     <hr />
     <table border="2px">
       <tr v-for="product in products" :key="product.id">
         <td>{{ product.title }}</td>
         <td>{{ product.price }}</td>
+        <td><img v-if="product.img" :src="product.img" class="img"></td>
         <td>
           <button @click="onDelete(product.id)">Delete</button>
           <button @click="onEdit(product)">Edit</button>
@@ -27,7 +32,9 @@ export default {
       products: [],
       title: null,
       price: null,
-      curtrentProductId: null
+      curtrentProductId: null,
+      img:null,
+      tmpImage:null
     };
   },
 
@@ -63,7 +70,8 @@ export default {
           .doc()
           .set({
             title: this.title,
-            price: this.price
+            price: this.price,
+            img:this.tmpImage
           })
           .then(function() {
             console.log("Document successfully written!");
@@ -77,7 +85,8 @@ export default {
           .doc(this.curtrentProductId)
           .set({
             title: this.title,
-            price: this.price
+            price: this.price,
+            img:this.tmpImage
           })
           .then(function() {
             console.log("Document successfully written!");
@@ -107,6 +116,19 @@ export default {
       this.title = product.title;
       this.price = product.price;
       this.curtrentProductId = product.id;
+      this.tmpImage=product.img
+    },
+
+    onSelect(e){
+      console.log(e);
+      
+      const reader =new FileReader()
+      const self=this
+      reader.onloadend = function (e) {
+        self.tmpImage = e.target.result;
+      }
+       reader.readAsDataURL(e.target.files[0]);
+
     }
   },
 
@@ -118,18 +140,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.img{
+  width:64px
 }
 </style>

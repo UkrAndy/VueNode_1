@@ -1,0 +1,6 @@
+<%for(prod of products){%>
+  <div><%= prod.title%></div>
+  <div><%= prod.price%></div>
+  <a href=<%=`/products/delete/${prod._id}`%> >Delete</a>
+  <hr/>
+<%}%>
